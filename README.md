@@ -41,6 +41,13 @@ Built a working SIEM environment using Splunk Enterprise to ingest, query, and i
 
 ---
 
+## Dashboard
+
+![Dashboard Overview](screenshots/dashboard_overview.png)
+![Dashboard Bottom](screenshots/dashboard_bottom.png)
+
+---
+
 ## SPL Queries
 
 ### Query 1 — Attack Scope Across Infrastructure
@@ -48,6 +55,8 @@ Built a working SIEM environment using Splunk Enterprise to ingest, query, and i
 index=main "194.8.74.23" | stats count by source
 ```
 **Finding:** Single attacker IP generated 313 events across 7 log sources — confirmed infrastructure-wide attack, not a single targeted probe.
+
+![Attack Scope](screenshots/query2_attack_scope.png)
 
 ---
 
@@ -60,6 +69,8 @@ index=main "Failed password" "194.8.74.23"
 ```
 **Finding:** 20+ usernames attempted using a standard Linux system account wordlist. Top targets: `local` (6), `system` (6), `irc` (5), `root` (4). Confirms non-targeted opportunistic dictionary attack.
 
+![Brute Force Usernames](screenshots/query3_brute_force_usernames.png)
+
 ---
 
 ### Query 3 — Attack Timeline
@@ -67,6 +78,8 @@ index=main "Failed password" "194.8.74.23"
 index=main "194.8.74.23" earliest=-1d | timechart span=1h count
 ```
 **Finding:** 2 events at 14:00 (recon probe), silence for 12 hours, then 132 events at 02:00 AM. Textbook off-hours attack timing — deliberate strategy to evade SOC monitoring.
+
+![Attack Timeline](screenshots/query4_attack_timeline.png)
 
 ---
 
@@ -78,23 +91,7 @@ index=main "djohnson" OR "nsharpe"
 ```
 **Finding:** Both accounts show `Accepted password` events during the 02:54 AM attack window from two separate internal IPs. `nsharpe` executed `su` to root. Root opened multiple sessions for `djohnson`. Confirms credential compromise and privilege escalation.
 
----
-
-## Dashboard
-
-![Dashboard Overview](screenshots/dashboard_overview.png)
-![Dashboard Bottom](screenshots/dashboard_bottom.png)
-
----
-
-## Evidence
-
-| Screenshot | Description |
-|-----------|-------------|
-| ![Attack Scope](screenshots/query2_attack_scope.png) | Query 1 — 313 events across 7 sources |
-| ![Usernames](screenshots/query3_brute_force_usernames.png) | Query 2 — Brute force username table |
-| ![Timeline](screenshots/query4_attack_timeline.png) | Query 3 — 2AM attack spike |
-| ![Compromised](screenshots/query5_compromised_accounts.png) | Query 4 — nsharpe & djohnson compromise |
+![Compromised Accounts](screenshots/query5_compromised_accounts.png)
 
 ---
 
@@ -133,8 +130,8 @@ A two-phase SSH brute force attack originating from external IP `194.8.74.23`. T
 ---
 
 ## Related Projects
-- [Network Scanner](../week4/) — TCP port scanner and service detector
-- [AWS Security Audit](../week5/) — S3, IAM, and EC2 security automation
+- [Network Scanner](https://github.com/CodeBroKinty/python-automation-labs/blob/main/networking/network_scanner.py)
+- [AWS Security Audit](https://github.com/CodeBroKinty/python-automation-labs/blob/main/cloud_automation/s3_security_audit.py)
 - [Python Automation Labs](https://github.com/CodeBroKinty/python-automation-labs)
 
 ---
